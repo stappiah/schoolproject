@@ -3,6 +3,9 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Colors} from './Colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootParams } from '../navigation/RootParams';
+import { useNavigation } from '@react-navigation/native';
 
 type propsType = {
   data: {
@@ -12,9 +15,13 @@ type propsType = {
   };
 };
 
+type screenType = NativeStackNavigationProp<RootParams>;
+
 export function MainStationCard({data}: propsType) {
+  const navigation = useNavigation<screenType>();
+
   return (
-    <TouchableOpacity style={styles.maincontainer}>
+    <TouchableOpacity style={styles.maincontainer} onPress={() => navigation.navigate("reservation")}>
       <View style={{height: 150, width: '100%'}}>
         <Image
           source={require('../../assets/2.jpg')}
@@ -67,8 +74,10 @@ export function MainStationCard({data}: propsType) {
 }
 
 export function StationCard() {
+  const navigation = useNavigation<screenType>();
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate("reservation")}>
       <View style={{height: 150, width: '100%'}}>
         <Image
           source={require('../../assets/2.jpg')}
@@ -124,7 +133,6 @@ const styles = StyleSheet.create({
     elevation: 2,
     width: Dimensions.get('window').width / 1.3,
     margin: 10,
-    borderBlockColor: Colors.white,
     borderRadius: 10,
   },
   maincontainer: {

@@ -64,7 +64,7 @@ export default function Home() {
             />
             <Text style={styles.cardText}>Reservation</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.card}>
+          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("renting")}>
             <Image
               source={require('../assets/bus.png')}
               style={{height: 70, width: 70}}
@@ -103,12 +103,13 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width
   },
   card: {
-    elevation: 2,
+    elevation: 8,
     borderRadius: 10,
     width: "40%",
     alignItems: 'center',
     paddingVertical: 30,
     margin: 10,
+    backgroundColor: Colors.white
   },
   cardText: {
     color: Colors.black,

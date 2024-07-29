@@ -4,4 +4,8 @@ export type RootParams = {
   home: undefined;
   option: undefined;
   station: undefined;
+  reservation: undefined;
+  ticket: undefined;
+  renting: undefined;
+  renting_details: undefined;
 };
