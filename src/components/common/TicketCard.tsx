@@ -2,7 +2,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import {Colors} from './Colors';
 
-export default function TicketCard() {
+export default function TicketCard({seat_number}: {seat_number: number}) {
   return (
     <TouchableOpacity style={styles.container}>
       <View
@@ -27,14 +27,23 @@ export default function TicketCard() {
           </Text>
         </View>
       </View>
-      <Text style={{color: Colors.primary, fontWeight: '500'}}>
-        VIP Transport Limited
-      </Text>
-
-      <Text style={styles.departureText}>Departure Date</Text>
-      <Text style={styles.departureDataTime}>Sunday, 20th July, 2024</Text>
-
       <View style={{flexDirection: "row",justifyContent: "space-between"}}>
+        <View>
+          <Text style={{color: Colors.primary, fontWeight: '500'}}>
+            VIP Transport Limited
+          </Text>
+
+          <Text style={styles.departureText}>Departure Date</Text>
+          <Text style={styles.departureDataTime}>Sunday, 20th July, 2024</Text>
+        </View>
+
+        <View>
+          <Text style={{fontWeight: '600', fontSize: 20,color: Colors.black,paddingLeft: 10}}>{seat_number}</Text>
+          <Text style={{fontWeight: '600', fontSize: 16,color: Colors.gray}}>Seat</Text>
+        </View>
+      </View>
+
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View>
           <Text style={styles.departureText}>Departure Time</Text>
           <Text style={styles.departureDataTime}>9:00AM</Text>
@@ -56,7 +65,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     width: '95%',
     marginHorizontal: 'auto',
-    marginVertical: 5
+    marginVertical: 5,
   },
   departureDataTime: {
     color: Colors.black,

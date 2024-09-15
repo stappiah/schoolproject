@@ -3,10 +3,11 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Header from '../components/common/Header';
-import SearchBar from '../components/common/SearchBar';
-import RegionDropdown from '../components/common/RegionDropdown';
-import {MainStationCard} from '../components/common/StationCard';
+import Header from '../../components/common/Header';
+import SearchBar from '../../components/common/SearchBar';
+import RegionDropdown from '../../components/common/RegionDropdown';
+import {MainStationCard} from '../../components/common/StationCard';
+import { Colors } from '../../components/common/Colors';
 
 export default function Station() {
   const [region, setregion] = React.useState('');
@@ -67,13 +68,14 @@ export default function Station() {
   return (
     <SafeAreaView>
       <Header label="Select Bus station" />
+      <StatusBar backgroundColor={"#f4f4f4"} />
 
       <View style={{paddingTop: 10,paddingBottom: 70}}>
         <FlatList
           ListHeaderComponent={
             <View>
               <View style={{padding: 5}}>
-                <SearchBar placeholder="Search name of bus station" />
+                <SearchBar placeholder="Search Bus Station" />
               </View>
               <View style={{paddingHorizontal: 6}}>
                 <RegionDropdown value={region} setValue={setregion} />

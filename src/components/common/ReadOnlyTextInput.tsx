@@ -5,44 +5,22 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from './Colors';
 
 interface TextInputType {
-  //   icon: string;
   label: string;
-  placeholder: string;
-  keyboardType:
-    | 'default'
-    | 'numeric'
-    | 'email-address'
-    | 'phone-pad'
-    | 'number-pad';
   value: string;
-  onChange: (e: string) => void;
 }
 
-export default function TextInputComponent({
-  //   icon,
+export default function ReadOnlyTextInput({
   label,
-  placeholder,
-  keyboardType,
   value,
-  onChange,
 }: TextInputType) {
   return (
     <View style={styles.textStyle}>
-      {/* <TextInput
-        label={label}
-        
-        style={styles.inputStyle}
-        // left={<TextInput.Icon color={'#ddd'} icon={icon} />}
-        /> */}
-
       <TextInput
         mode="outlined"
+        readOnly
         label={label}
         value={value}
         placeholderTextColor={Colors.gray}
-        keyboardType={keyboardType}
-        onChangeText={onChange}
-        placeholder={placeholder}
         style={{backgroundColor: Colors.white}}
         outlineStyle={{borderWidth: 1, borderColor: Colors.black}}
       />

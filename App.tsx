@@ -1,43 +1,45 @@
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import Login from './src/screens/Login';
-import {RootParams} from './src/components/navigation/RootParams';
-import Home from './src/screens/Home';
-import LoginOption from './src/screens/LoginOption';
-import Signup from './src/screens/Signup';
+import Login from './src/screens/user/Login';
+import {AdminParams, RootParams} from './src/components/navigation/RootParams';
+import Home from './src/screens/user/Home';
+import LoginOption from './src/screens/user/LoginOption';
+import Signup from './src/screens/user/Signup';
 import BottomTab from './src/components/navigation/BottomTab';
-import Station from './src/screens/Station';
-import Reservation from './src/screens/Reservation';
-import Ticket from './src/screens/Ticket';
-import Renting from './src/screens/Renting';
-import RentingDetails from './src/screens/RentingDetails';
+import Station from './src/screens/user/Station';
+import Reservation from './src/screens/user/Reservation';
+import Ticket from './src/screens/user/Ticket';
+import Renting from './src/screens/user/Renting';
+import RentingDetails from './src/screens/user/RentingDetails';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import AdminStation from './src/screens/admin/AdminStation';
+import Bookings from './src/screens/admin/Bookings';
+import Schedule from './src/screens/admin/Schedule';
+import Buses from './src/screens/admin/Buses';
+import Rentals from './src/screens/admin/Rentals';
+import {Provider} from 'react-redux';
+import Store from './src/feature/Store';
+import persistStore from 'redux-persist/es/persistStore';
+import {PersistGate} from 'redux-persist/integration/react';
+import Navigations from './src/components/navigation/navigations';
 
 export default function App() {
+  const persistor = persistStore(Store);
   const Stack = createNativeStackNavigator<RootParams>();
+  const Drawer = createDrawerNavigator<AdminParams>();
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <NavigationContainer>
-        <BottomSheetModalProvider>
-          <Stack.Navigator
-            initialRouteName="renting_details"
-            screenOptions={{
-              headerShown: false,
-            }}>
-            <Stack.Screen name="option" component={LoginOption} />
-            <Stack.Screen name="home" component={BottomTab} />
-            <Stack.Screen name="login" component={Login} />
-            <Stack.Screen name="signup" component={Signup} />
-            <Stack.Screen name="station" component={Station} />
-            <Stack.Screen name="reservation" component={Reservation} />
-            <Stack.Screen name="ticket" component={Ticket} />
-            <Stack.Screen name="renting" component={Renting} />
-            <Stack.Screen name="renting_details" component={RentingDetails} />
-          </Stack.Navigator>
-        </BottomSheetModalProvider>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+    <Provider store={Store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <Navigations />
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </PersistGate>
+    </Provider>
   );
 }

@@ -9,39 +9,40 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import React from 'react';
-import { Colors } from './Colors';
+import {Colors} from './Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Picker} from '@react-native-picker/picker';
 
 type propsType = {
   value: string;
   setValue: (value: string) => void;
 };
 
-export default function RegionDropdown({ value, setValue }: propsType) {
+export default function RegionDropdown({value, setValue}: propsType) {
   const REGION = [
-    { label: 'Upper West Region', value: 'Upper West Region' },
-    { label: 'Upper East Region', value: 'Upper East Region' },
-    { label: 'North East Region', value: 'North East Region' },
-    { label: 'Northern Region', value: 'Northern Region' },
-    { label: 'Savannah Region', value: 'Savannah Region' },
-    { label: 'Bono East Region', value: 'Bono East Region' },
-    { label: 'Brong Ahafo Region', value: 'Brong Ahafo Region' },
-    { label: 'Oti Region', value: 'Oti Region' },
-    { label: 'Volta Region', value: 'Volta Region' },
-    { label: 'Eastern Region', value: 'Eastern Region' },
-    { label: 'Ashanti Region', value: 'Ashanti Region' },
-    { label: 'Ahafo Region', value: 'Ahafo Region' },
-    { label: 'Western North Region', value: 'Western North Region' },
-    { label: 'Western Region', value: 'Western Region' },
-    { label: 'Central Region', value: 'Central Region' },
-    { label: 'Greater Accra Region', value: 'Greater Accra Region' },
+    {label: 'Upper West Region', value: 'Upper West Region'},
+    {label: 'Upper East Region', value: 'Upper East Region'},
+    {label: 'North East Region', value: 'North East Region'},
+    {label: 'Northern Region', value: 'Northern Region'},
+    {label: 'Savannah Region', value: 'Savannah Region'},
+    {label: 'Bono East Region', value: 'Bono East Region'},
+    {label: 'Brong Ahafo Region', value: 'Brong Ahafo Region'},
+    {label: 'Oti Region', value: 'Oti Region'},
+    {label: 'Volta Region', value: 'Volta Region'},
+    {label: 'Eastern Region', value: 'Eastern Region'},
+    {label: 'Ashanti Region', value: 'Ashanti Region'},
+    {label: 'Ahafo Region', value: 'Ahafo Region'},
+    {label: 'Western North Region', value: 'Western North Region'},
+    {label: 'Western Region', value: 'Western Region'},
+    {label: 'Central Region', value: 'Central Region'},
+    {label: 'Greater Accra Region', value: 'Greater Accra Region'},
   ];
 
   const [openModal, setOpenModal] = React.useState(false);
 
   return (
     <View>
-      <Modal visible={openModal} transparent animationType="fade">
+      {/* <Modal visible={openModal} transparent animationType="fade">
         <TouchableWithoutFeedback onPress={() => setOpenModal(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.container}>
@@ -63,9 +64,9 @@ export default function RegionDropdown({ value, setValue }: propsType) {
             </View>
           </View>
         </TouchableWithoutFeedback>
-      </Modal>
+      </Modal> */}
 
-      <Pressable onPress={() => setOpenModal(true)} style={styles.input}>
+      {/* <Pressable onPress={() => setOpenModal(true)} style={styles.input}>
         <View style={{ width: '95%', flexDirection: 'row' }}>
           <Icon name="location-pin" size={20} color={Colors.gray} />
           <Text style={{ color: Colors.gray, paddingLeft: 5 }}>
@@ -73,7 +74,19 @@ export default function RegionDropdown({ value, setValue }: propsType) {
           </Text>
         </View>
         <Icon name="keyboard-arrow-down" size={20} />
-      </Pressable>
+      </Pressable> */}
+
+      <View style={styles.picker}>
+        <Picker
+        style={{backgroundColor: Colors.white}}
+          selectedValue={value}
+          onValueChange={itemValue => setValue(itemValue)}>
+          <Picker.Item label={'Select region'} value={''} style={styles.pickerText} />
+          {REGION.map((item, index) => (
+            <Picker.Item label={item.label} value={item.value} key={index} style={styles.pickerText} />
+          ))}
+        </Picker>
+      </View>
     </View>
   );
 }
@@ -102,4 +115,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
   },
+  picker: {
+    borderRadius: 4,
+    backgroundColor: Colors.white,
+    marginHorizontal: 5,
+    height: 40,
+    justifyContent: "center",
+    alignContent: "center"
+  },
+  pickerText:{
+    color: Colors.white
+  }
 });

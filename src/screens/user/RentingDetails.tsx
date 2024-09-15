@@ -6,25 +6,24 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  Button,
 } from 'react-native';
 import React from 'react';
-import {Colors} from '../components/common/Colors';
+import {Colors} from '../../components/common/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MC from 'react-native-vector-icons/MaterialCommunityIcons';
 import Antd from 'react-native-vector-icons/AntDesign';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootParams} from '../components/navigation/RootParams';
+import {RootParams} from '../../components/navigation/RootParams';
 import {useNavigation} from '@react-navigation/native';
-// import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-// import BottomSheet from 'reanimated-bottom-sheet';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetView,
   useBottomSheetModal,
 } from '@gorhom/bottom-sheet';
+import TextInputComponent from '../../components/common/TextInputComponent';
+import {Button} from '../../components/common/Button';
 
 type navType = NativeStackNavigationProp<RootParams>;
 
@@ -32,9 +31,10 @@ export default function RentingDetails() {
   const navigation = useNavigation<navType>();
   const {width, height} = Dimensions.get('window');
 
-  const sheetRef = React.useRef<BottomSheetModal>(null);
+  const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const snapPoints = React.useMemo(() => ['25%', '50%', '90%'], []);
   const {dismiss} = useBottomSheetModal();
+
   const handleBackdrop = React.useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -44,17 +44,6 @@ export default function RentingDetails() {
       />
     ),
     [],
-  );
-
-  const renderContent = () => (
-    <View
-      style={{
-        backgroundColor: 'white',
-        padding: 16,
-        height: 450,
-      }}>
-      <Text>Swipe down to close</Text>
-    </View>
   );
 
   return (
@@ -67,17 +56,13 @@ export default function RentingDetails() {
             translucent
           />
           <Image
-            source={require('../assets/busimage3.jpg')}
+            source={require('../../assets/busimage3.jpg')}
             style={{height: '100%', width: '100%', resizeMode: 'cover'}}
           />
           <TouchableOpacity
             style={styles.backBtn}
             onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back-ios" size={15} color={Colors.white} />
-            <Text
-              style={{color: Colors.white, fontWeight: '600', fontSize: 17}}>
-              Back
-            </Text>
+            <Icon name="arrow-back-ios" size={17} color={Colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -222,7 +207,7 @@ export default function RentingDetails() {
 
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => sheetRef.current?.present()}>
+            onPress={() => bottomSheetRef.current?.present()}>
             <Text
               style={{
                 color: Colors.white,
@@ -237,12 +222,55 @@ export default function RentingDetails() {
       </View>
 
       <BottomSheetModal
-        ref={sheetRef}
+        ref={bottomSheetRef}
         index={1}
         snapPoints={snapPoints}
+        enableDismissOnClose
+        enablePanDownToClose
         backdropComponent={handleBackdrop}>
-          <Text>Hellow</Text>
+        <View style={{paddingHorizontal: 15}}>
+          <Text
+            style={{
+              color: Colors.black,
+              fontWeight: '600',
+              textAlign: 'center',
+              fontSize: 17,
+              paddingVertical: 10,
+            }}>
+            Car Rental
+          </Text>
+          <View>
+            <TextInputComponent label="Enter your name" />
+          </View>
+          <View>
+            <TextInputComponent label="Enter phone number" />
+          </View>
+          <View>
+            <TextInputComponent label="Enter pick up point" />
+            <TextInputComponent label="Enter destination" />
+          </View>
+          <View style={{paddingTop: 10}}>
+            <Button label="Rent Bus" />
+          </View>
+        </View>
+      </BottomSheetModal>
+      {/* <View style={{flex: 1}}>
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={1}
+          snapPoints={snapPoints}
+          backdropComponent={handleBackdrop}>
+          <Text
+            style={{
+              color: Colors.black,
+              fontWeight: '600',
+              paddingBottom: 10,
+              fontSize: 17,
+            }}>
+            Add New Product
+          </Text>
         </BottomSheetModal>
+      </View> */}
     </>
   );
 }
@@ -258,12 +286,15 @@ const styles = StyleSheet.create({
   },
   backBtn: {
     position: 'absolute',
-    flexDirection: 'row',
     alignItems: 'center',
-    top: 0,
-    gap: 5,
-    paddingLeft: 10,
-    paddingTop: 40,
+    justifyContent: 'center',
+    top: 30,
+    marginLeft: 10,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    width: 35,
+    height: 35,
+    paddingLeft: 4
   },
   phoneWhatsApp: {
     backgroundColor: Colors.white,

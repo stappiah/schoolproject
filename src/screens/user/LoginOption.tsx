@@ -8,9 +8,9 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import {Colors} from '../components/common/Colors';
+import {Colors} from '../../components/common/Colors';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootParams} from '../components/navigation/RootParams';
+import {RootParams} from '../../components/navigation/RootParams';
 import {useNavigation} from '@react-navigation/native';
 
 type screenType = NativeStackNavigationProp<RootParams>;
@@ -20,7 +20,7 @@ export default function LoginOption() {
 
   return (
     <ImageBackground
-      source={require('../assets/1.jpg')}
+      source={require('../../assets/1.jpg')}
       style={styles.container}>
       <StatusBar
         backgroundColor={'transparent'}

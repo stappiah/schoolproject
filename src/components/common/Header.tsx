@@ -18,8 +18,8 @@ export default function Header({label}: propsType) {
   return (
     <View style={{flexDirection: "row",alignItems: "center",justifyContent: "space-between",paddingHorizontal: 10,paddingVertical: 5}}>
       <StatusBar barStyle={'dark-content'} />
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back-ios" size={25} />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{marginLeft: 4}}>
+        <Icon name="arrow-back-ios" size={25} color={Colors.gray} />
       </TouchableOpacity>
       <Text style={{color: Colors.black,fontSize: 17}}>{label}</Text>
       <Text></Text>

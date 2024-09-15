@@ -10,26 +10,66 @@ import {
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootParams} from '../components/navigation/RootParams';
-import {Colors} from '../components/common/Colors';
+import {AdminParams, RootParams} from '../../components/navigation/RootParams';
+import {Colors} from '../../components/common/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Button from '../components/common/Button';
-import TextInputComponent from '../components/common/TextInputComponent';
+import {Button} from '../../components/common/Button';
+import TextInputComponent from '../../components/common/TextInputComponent';
 import {TextInput} from 'react-native-paper';
-import PasswordInputComponent from '../components/common/PasswordComponent';
+import PasswordInputComponent from '../../components/common/PasswordComponent';
+import {loginData} from '../../components/common/Data';
+import SnackbarComponent from '../../components/common/SnackbarComponent';
+import {useDispatch} from 'react-redux';
+import {GetAuth} from '../../feature/slices/AuthSlice';
 
 type screenType = NativeStackNavigationProp<RootParams>;
+type screenType2 = NativeStackNavigationProp<AdminParams>;
 
 export default function Login() {
   const navigation = useNavigation<screenType>();
+  const dispatch = useDispatch();
+
   const [email, setemail] = React.useState('');
   const [password, setpassword] = React.useState('');
+  const [message, setmessage] = React.useState('');
+  const [openSnack, setopenSnack] = React.useState(false);
+
+  const handleLogin = () => {
+    if (!email) {
+      setopenSnack(true);
+      setmessage('Enter email address');
+      return;
+    }
+    if (!password) {
+      setopenSnack(true);
+      setmessage('Enter password');
+      return;
+    }
+
+    const response = loginData.filter(
+      item => item.email === email && item.password === password,
+    );
+    if (response.length === 0) {
+      setopenSnack(true);
+      setmessage('Invalid Login credentials');
+      return;
+    }
+
+    dispatch(
+      GetAuth({
+        first_name: response[0]?.first_name,
+        last_name: response[0]?.last_name,
+        email: response[0]?.email,
+        user_type: response[0]?.user_type,
+      }),
+    );
+  };
 
   return (
     <View style={{flex: 1, height: '100%'}}>
       <ImageBackground
         resizeMode="cover"
-        source={require('../assets/1.jpg')}
+        source={require('../../assets/1.jpg')}
         style={{height: '100%', width: '100%'}}>
         <StatusBar
           backgroundColor={'transparent'}
@@ -65,7 +105,7 @@ export default function Login() {
                 onChange={e => setpassword(e)}
               />
             </View>
-            <View style={{alignItems: "flex-end"}}>
+            <View style={{alignItems: 'flex-end'}}>
               <TouchableOpacity>
                 <Text
                   style={{
@@ -79,11 +119,20 @@ export default function Login() {
             </View>
 
             <View style={{paddingTop: 20}}>
-              <Button label="Login" onPress={() => navigation.navigate("home")} />
+              <Button label="Login" onPress={handleLogin} />
             </View>
           </View>
         </View>
       </ImageBackground>
+
+      <View>
+        <SnackbarComponent
+          message={message}
+          visible={openSnack}
+          onDismiss={() => setopenSnack(false)}
+          onPress={() => setopenSnack(false)}
+        />
+      </View>
     </View>
   );
 }

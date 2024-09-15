@@ -1,12 +1,12 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Home from '../../screens/Home';
+import Home from '../../screens/user/Home';
 import { Colors } from '../common/Colors';
 import Oc from 'react-native-vector-icons/Octicons';
 import Fa6 from 'react-native-vector-icons/FontAwesome6';
 import Fa from 'react-native-vector-icons/FontAwesome';
-import Account from '../../screens/Account';
+import Account from '../../screens/user/Account';
 
 export default function BottomTab() {
   const Tab = createBottomTabNavigator();

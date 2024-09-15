@@ -10,11 +10,11 @@ import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {RootParams} from '../components/navigation/RootParams';
+import {RootParams} from '../../components/navigation/RootParams';
 import {useNavigation} from '@react-navigation/native';
-import {Colors} from '../components/common/Colors';
-import TextInputComponent from '../components/common/TextInputComponent';
-import Button from '../components/common/Button';
+import {Colors} from '../../components/common/Colors';
+import TextInputComponent from '../../components/common/TextInputComponent';
+import {Button} from '../../components/common/Button';
 
 type screenType = NativeStackNavigationProp<RootParams>;
 

@@ -8,4 +8,14 @@ export type RootParams = {
   ticket: undefined;
   renting: undefined;
   renting_details: undefined;
+  bus_station: undefined;
 };
+
+export type AdminParams = {
+  admin_station: undefined;
+  bookings: undefined;
+  schedule: undefined;
+  buses: undefined;
+  rentals: undefined;
+  settings: undefined;
+}
