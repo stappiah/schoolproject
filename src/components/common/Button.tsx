@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Colors } from './Colors'
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -16,10 +16,18 @@ export function Button({label,onPress}: propsType) {
   )
 }
 
+export function LoadingButton() {
+  return (
+    <TouchableOpacity style={styles.container}>
+      <ActivityIndicator animating color={Colors.white} />
+    </TouchableOpacity>
+  )
+}
+
 export function ModalCloseButton({label,onPress}: propsType) {
   return (
     <TouchableOpacity style={styles.modal_close_container} onPress={onPress}>
-      <Text style={{color: Colors.white,textAlign: "center",fontWeight: "600"}}>{label}</Text>
+      <Text style={{color: Colors.primary,textAlign: "center",fontWeight: "600"}}>{label}</Text>
     </TouchableOpacity>
   )
 }
@@ -27,7 +35,15 @@ export function ModalCloseButton({label,onPress}: propsType) {
 export function ModalButton({label,onPress}: propsType) {
   return (
     <TouchableOpacity style={styles.modal_container} onPress={onPress}>
-      <Text style={{color: Colors.primary,textAlign: "center",fontWeight: "600"}}>{label}</Text>
+      <Text style={{color: Colors.white,textAlign: "center",fontWeight: "600"}}>{label}</Text>
+    </TouchableOpacity>
+  )
+}
+
+export function ModalLoadingButton() {
+  return (
+    <TouchableOpacity style={styles.modal_container}>
+      <ActivityIndicator animating color={Colors.white} />
     </TouchableOpacity>
   )
 }
@@ -48,17 +64,17 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     modal_close_container:{
-        backgroundColor: Colors.primary,
-        paddingVertical: 5,
-        borderRadius: 10,
-        paddingHorizontal: 10
-    },
-    modal_container:{
         backgroundColor: Colors.white,
         paddingVertical: 5,
-        borderRadius: 10,
+        borderRadius: 8,
+        paddingHorizontal: 10,
         borderColor: Colors.primary,
         borderWidth: 1,
+    },
+    modal_container:{
+        backgroundColor: Colors.primary,
+        paddingVertical: 5,
+        borderRadius: 8,
         paddingHorizontal: 10
     },
     add_container:{

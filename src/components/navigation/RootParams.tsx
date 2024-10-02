@@ -1,3 +1,5 @@
+import { BusRentalType, scheduleType } from "../common/Types";
+
 export type RootParams = {
   signup: undefined;
   login: undefined;
@@ -5,10 +7,11 @@ export type RootParams = {
   option: undefined;
   station: undefined;
   reservation: undefined;
-  ticket: undefined;
+  ticket: {destination: string};
   renting: undefined;
-  renting_details: undefined;
+  renting_details: {details: BusRentalType};
   bus_station: undefined;
+  transport_details: {schedule_detail: scheduleType};
 };
 
 export type AdminParams = {
@@ -18,4 +21,12 @@ export type AdminParams = {
   buses: undefined;
   rentals: undefined;
   settings: undefined;
+  change_password: undefined;
+}
+
+export type BottomTabType = {
+  home_tab: undefined;
+  archive: {index: number};
+  receipt: undefined;
+  account: undefined;
 }

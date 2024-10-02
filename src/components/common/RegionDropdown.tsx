@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  useColorScheme,
 } from 'react-native';
 import React from 'react';
 import {Colors} from './Colors';
@@ -19,6 +20,8 @@ type propsType = {
 };
 
 export default function RegionDropdown({value, setValue}: propsType) {
+  const colorScheme = useColorScheme();
+  
   const REGION = [
     {label: 'Upper West Region', value: 'Upper West Region'},
     {label: 'Upper East Region', value: 'Upper East Region'},
@@ -42,48 +45,25 @@ export default function RegionDropdown({value, setValue}: propsType) {
 
   return (
     <View>
-      {/* <Modal visible={openModal} transparent animationType="fade">
-        <TouchableWithoutFeedback onPress={() => setOpenModal(false)}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.container}>
-              <FlatList
-                data={REGION}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={{ padding: 5 }}
-                    onPress={() => {
-                      setValue(item.value);
-                      setOpenModal(false);
-                    }}>
-                    <Text style={{ color: Colors.gray, fontSize: 17 }}>
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal> */}
-
-      {/* <Pressable onPress={() => setOpenModal(true)} style={styles.input}>
-        <View style={{ width: '95%', flexDirection: 'row' }}>
-          <Icon name="location-pin" size={20} color={Colors.gray} />
-          <Text style={{ color: Colors.gray, paddingLeft: 5 }}>
-            {value ? value : 'Select Region'}
-          </Text>
-        </View>
-        <Icon name="keyboard-arrow-down" size={20} />
-      </Pressable> */}
-
       <View style={styles.picker}>
         <Picker
-        style={{backgroundColor: Colors.white}}
+        style={{color: Colors.gray}}
           selectedValue={value}
           onValueChange={itemValue => setValue(itemValue)}>
-          <Picker.Item label={'Select region'} value={''} style={styles.pickerText} />
+          <Picker.Item
+            label={'Select region'}
+            value={''}
+            style={{color: Colors.gray}}
+          />
           {REGION.map((item, index) => (
-            <Picker.Item label={item.label} value={item.value} key={index} style={styles.pickerText} />
+            <Picker.Item
+              label={item.label}
+              value={item.value}
+              key={index}
+              style={{
+                color: colorScheme === 'dark' ? Colors.white : Colors.black,
+              }}
+            />
           ))}
         </Picker>
       </View>
@@ -119,11 +99,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: Colors.white,
     marginHorizontal: 5,
-    height: 40,
-    justifyContent: "center",
-    alignContent: "center"
+    height: 44,
+    justifyContent: 'center',
+    alignContent: 'center',
   },
-  pickerText:{
-    color: Colors.white
-  }
+  pickerText: {
+    color: Colors.white,
+  },
 });

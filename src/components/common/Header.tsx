@@ -17,11 +17,11 @@ export default function Header({label}: propsType) {
 
   return (
     <View style={{flexDirection: "row",alignItems: "center",justifyContent: "space-between",paddingHorizontal: 10,paddingVertical: 5}}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar barStyle={'dark-content'} backgroundColor={"#f4f4f4"} />
       <TouchableOpacity onPress={() => navigation.goBack()} style={{marginLeft: 4}}>
         <Icon name="arrow-back-ios" size={25} color={Colors.gray} />
       </TouchableOpacity>
-      <Text style={{color: Colors.black,fontSize: 17}}>{label}</Text>
+      <Text style={{color: Colors.black,fontSize: 17,fontWeight: "500"}}>{label}</Text>
       <Text></Text>
     </View>
   );

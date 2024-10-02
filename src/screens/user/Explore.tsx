@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function change_password() {
+export default function Explore() {
   return (
     <View>
-      <Text>change_password</Text>
+      <Text>Explore</Text>
     </View>
   )
 }

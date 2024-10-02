@@ -5,8 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 type propsType = {
   placeholder: string;
+  onChange: (e: string) => void;
 };
-export default function SearchBar({placeholder}: propsType) {
+export default function SearchBar({placeholder, onChange}: propsType) {
   return (
     <View style={styles.container}>
       <Icon name="search" size={20} color={Colors.gray} />
@@ -14,6 +15,7 @@ export default function SearchBar({placeholder}: propsType) {
         placeholder={placeholder}
         style={styles.input}
         placeholderTextColor={Colors.gray}
+        onChangeText={onChange}
       />
     </View>
   );

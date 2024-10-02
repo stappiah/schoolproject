@@ -23,18 +23,23 @@ import {useSelector} from 'react-redux';
 import {selectuser} from '../../feature/slices/AuthSlice';
 import Settings from '../../screens/admin/Settings';
 import {Colors} from '../common/Colors';
+import Archive from '../../screens/user/Archive';
+import TransportDetails from '../../screens/user/TransportDetails';
+import {selectStation} from '../../feature/slices/StationSlice';
+import ChangePassword from '../../screens/admin/ChangePassword';
 
 export default function Navigations() {
   const Stack = createNativeStackNavigator<RootParams>();
   const Drawer = createDrawerNavigator<AdminParams>();
   const selectUser = useSelector(selectuser);
+  const station = useSelector(selectStation);
 
   return (
     <NavigationContainer>
       <BottomSheetModalProvider>
         {selectUser?.user_type === 'passenger' ? (
           <Stack.Navigator
-            initialRouteName="option"
+            initialRouteName="home"
             screenOptions={{
               headerShown: false,
             }}>
@@ -44,8 +49,12 @@ export default function Navigations() {
             <Stack.Screen name="ticket" component={Ticket} />
             <Stack.Screen name="renting" component={Renting} />
             <Stack.Screen name="renting_details" component={RentingDetails} />
+            <Stack.Screen
+              name="transport_details"
+              component={TransportDetails}
+            />
           </Stack.Navigator>
-        ) : selectUser === null ? (
+        ): selectUser === null ? (
           <Stack.Navigator
             initialRouteName="option"
             screenOptions={{
@@ -65,32 +74,60 @@ export default function Navigations() {
             <Drawer.Screen
               name="admin_station"
               component={AdminStation}
-              options={{drawerLabel: 'Station', title: ''}}
+              options={{
+                drawerLabel: 'Station',
+                title: station?.station_name ?? '',
+              }}
             />
             <Drawer.Screen
               name="bookings"
               component={Bookings}
-              options={{drawerLabel: 'All Bookings', title: ''}}
+              options={{
+                drawerLabel: 'All Bookings',
+                title: station?.station_name ?? '',
+              }}
             />
             <Drawer.Screen
               name="schedule"
               component={Schedule}
-              options={{drawerLabel: 'Schedule', title: ''}}
+              options={{
+                drawerLabel: 'Schedule',
+                title: station?.station_name ?? '',
+              }}
             />
             <Drawer.Screen
               name="buses"
               component={Buses}
-              options={{drawerLabel: 'Buses', title: ''}}
+              options={{
+                drawerLabel: 'Buses',
+                title: station?.station_name ?? '',
+              }}
             />
             <Drawer.Screen
               name="rentals"
               component={Rentals}
-              options={{drawerLabel: 'Car Rentals', title: ''}}
+              options={{
+                drawerLabel: 'Car Rentals',
+                title: station?.station_name ?? '',
+              }}
             />
             <Drawer.Screen
               name="settings"
               component={Settings}
-              options={{drawerLabel: 'Settings', title: ''}}
+              options={{
+                drawerLabel: 'Settings',
+                title: station?.station_name ?? '',
+                headerShown: false
+              }}
+            />
+            <Drawer.Screen
+              name="change_password"
+              component={ChangePassword}
+              options={{
+                drawerLabel: '',
+                title: '',
+                headerShown: false
+              }}
             />
           </Drawer.Navigator>
         )}

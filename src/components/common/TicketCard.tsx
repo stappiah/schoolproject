@@ -1,10 +1,28 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import {Colors} from './Colors';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootParams} from '../navigation/RootParams';
+import {useNavigation} from '@react-navigation/native';
+import {scheduleType} from './Types';
+import moment from 'moment';
+import {useSelector} from 'react-redux';
+import {selectStation} from '../../feature/slices/StationSlice';
 
-export default function TicketCard({seat_number}: {seat_number: number}) {
+type screenType = NativeStackNavigationProp<RootParams>;
+
+export default function TicketCard({data}: {data: scheduleType}) {
+  const navigation = useNavigation<screenType>();
+  const station = useSelector(selectStation);
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() =>
+        navigation.navigate('transport_details', {
+          schedule_detail: data,
+        })
+      }>
       <View
         style={{
           flexDirection: 'row',
@@ -23,34 +41,50 @@ export default function TicketCard({seat_number}: {seat_number: number}) {
             &cent;
           </Text>
           <Text style={{color: Colors.black, fontWeight: 'bold', fontSize: 20}}>
-            200
+            {data?.amount}
           </Text>
         </View>
       </View>
-      <View style={{flexDirection: "row",justifyContent: "space-between"}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View>
           <Text style={{color: Colors.primary, fontWeight: '500'}}>
-            VIP Transport Limited
+            {station?.company_name}
           </Text>
 
           <Text style={styles.departureText}>Departure Date</Text>
-          <Text style={styles.departureDataTime}>Sunday, 20th July, 2024</Text>
+          <Text style={styles.departureDataTime}>
+            {moment(data?.departure_date, 'YYYY-MM-DD').format(
+              'dddd, MMMM Do YYYY',
+            )}
+          </Text>
         </View>
 
         <View>
-          <Text style={{fontWeight: '600', fontSize: 20,color: Colors.black,paddingLeft: 10}}>{seat_number}</Text>
-          <Text style={{fontWeight: '600', fontSize: 16,color: Colors.gray}}>Seat</Text>
+          <Text
+            style={{
+              fontWeight: '600',
+              fontSize: 20,
+              color: Colors.black,
+              paddingLeft: 10,
+            }}>
+            {data?.seat_number}
+          </Text>
+          <Text style={{fontWeight: '600', fontSize: 16, color: Colors.gray}}>
+            Seat
+          </Text>
         </View>
       </View>
 
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View>
           <Text style={styles.departureText}>Departure Time</Text>
-          <Text style={styles.departureDataTime}>9:00AM</Text>
+          <Text style={styles.departureDataTime}>
+            {moment(data?.departure_time, 'HH:mm:ss').format('h:mm A')}
+          </Text>
         </View>
         <View>
-          <Text style={styles.departureText}>Phone Number</Text>
-          <Text style={styles.departureDataTime}>0551878700</Text>
+          <Text style={styles.departureText}>Car Number</Text>
+          <Text style={styles.departureDataTime}>{data?.car_number}</Text>
         </View>
       </View>
     </TouchableOpacity>

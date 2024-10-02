@@ -97,15 +97,26 @@ export const loginData = [
   {
     first_name: 'Stephen',
     last_name: 'Appiah',
-    email: 'stephen@gmail.com',
+    phone_number: '0551878700',
     password: '12345',
     user_type: 'passenger',
   },
   {
     first_name: 'Paul',
     last_name: 'Terku',
-    email: 'paulterku@gmail.com',
+    phone_number: '0242531625',
     password: '12345',
     user_type: 'admin',
   },
 ];
+
+export const WorkingDaysData = [
+  {value: 'Mon', label: 'Monday'},
+  {value: 'TUE', label: 'Tuesday'},
+  {value: 'WED', label: 'Wednesday'},
+  {value: 'THU', label: 'Thursday'},
+  {value: 'FRI', label: 'Friday'},
+  {value: 'SAT', label: 'Saturday'},
+  {value: 'SUN', label: 'Sunday'},
+];
+

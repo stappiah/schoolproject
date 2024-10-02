@@ -13,7 +13,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AdminParams, RootParams} from '../../components/navigation/RootParams';
 import {Colors} from '../../components/common/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Button} from '../../components/common/Button';
+import {Button, LoadingButton} from '../../components/common/Button';
 import TextInputComponent from '../../components/common/TextInputComponent';
 import {TextInput} from 'react-native-paper';
 import PasswordInputComponent from '../../components/common/PasswordComponent';
@@ -21,6 +21,8 @@ import {loginData} from '../../components/common/Data';
 import SnackbarComponent from '../../components/common/SnackbarComponent';
 import {useDispatch} from 'react-redux';
 import {GetAuth} from '../../feature/slices/AuthSlice';
+import axios from 'axios';
+import {BASEURL} from '../../components/common/BASEURL';
 
 type screenType = NativeStackNavigationProp<RootParams>;
 type screenType2 = NativeStackNavigationProp<AdminParams>;
@@ -29,15 +31,16 @@ export default function Login() {
   const navigation = useNavigation<screenType>();
   const dispatch = useDispatch();
 
-  const [email, setemail] = React.useState('');
+  const [phone_number, setphone_number] = React.useState('');
   const [password, setpassword] = React.useState('');
   const [message, setmessage] = React.useState('');
   const [openSnack, setopenSnack] = React.useState(false);
+  const [loading, setloading] = React.useState(false);
 
   const handleLogin = () => {
-    if (!email) {
+    if (!phone_number) {
       setopenSnack(true);
-      setmessage('Enter email address');
+      setmessage('Enter phone number');
       return;
     }
     if (!password) {
@@ -45,24 +48,39 @@ export default function Login() {
       setmessage('Enter password');
       return;
     }
+    const body = {
+      username: phone_number,
+      password,
+    };
+    setloading(true);
+    axios
+      .post(`${BASEURL}/account/login`, body)
+      .then(response => {
+        console.log(response.data);
 
-    const response = loginData.filter(
-      item => item.email === email && item.password === password,
-    );
-    if (response.length === 0) {
-      setopenSnack(true);
-      setmessage('Invalid Login credentials');
-      return;
-    }
-
-    dispatch(
-      GetAuth({
-        first_name: response[0]?.first_name,
-        last_name: response[0]?.last_name,
-        email: response[0]?.email,
-        user_type: response[0]?.user_type,
-      }),
-    );
+        dispatch(
+          GetAuth({
+            first_name: response?.data?.first_name,
+            last_name: response?.data?.last_name,
+            phone_number: response?.data?.phone_number,
+            user_type: response?.data?.user_type,
+            token: response?.data?.token,
+          }),
+        );
+      })
+      .catch(error => {
+        if (error?.response?.data) {
+          console.log(error?.response?.data);
+          if (error?.response?.data?.non_field_errors) {
+            setopenSnack(true);
+            setmessage(error?.response?.data?.non_field_errors[0]);
+          }
+        } else {
+          setopenSnack(true);
+          setmessage(error?.message);
+        }
+      })
+      .finally(() => setloading(false));
   };
 
   return (
@@ -90,11 +108,11 @@ export default function Login() {
             <Text style={styles.firstText}>Welcome back</Text>
             <View style={{paddingBottom: 10}}>
               <TextInputComponent
-                label="Email"
-                keyboardType="email-address"
-                placeholder="Enter email address"
-                value={email}
-                onChange={e => setemail(e)}
+                label="Phone Number"
+                keyboardType="phone-pad"
+                placeholder="Enter phone number"
+                value={phone_number}
+                onChange={e => setphone_number(e)}
               />
             </View>
             <View style={{paddingBottom: 15}}>
@@ -119,7 +137,11 @@ export default function Login() {
             </View>
 
             <View style={{paddingTop: 20}}>
-              <Button label="Login" onPress={handleLogin} />
+              {loading ? (
+                <LoadingButton />
+              ) : (
+                <Button label="Login" onPress={handleLogin} />
+              )}
             </View>
           </View>
         </View>

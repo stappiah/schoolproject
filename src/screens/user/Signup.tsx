@@ -15,11 +15,16 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootParams} from '../../components/navigation/RootParams';
 import {Colors} from '../../components/common/Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Button} from '../../components/common/Button';
+import {Button, LoadingButton} from '../../components/common/Button';
 import TextInputComponent from '../../components/common/TextInputComponent';
 import {TextInput} from 'react-native-paper';
 import PasswordInputComponent from '../../components/common/PasswordComponent';
 import {Picker} from '@react-native-picker/picker';
+import axios from 'axios';
+import {useDispatch} from 'react-redux';
+import {BASEURL} from '../../components/common/BASEURL';
+import SnackbarComponent from '../../components/common/SnackbarComponent';
+import {GetAuth} from '../../feature/slices/AuthSlice';
 
 type screenType = NativeStackNavigationProp<RootParams>;
 
@@ -27,11 +32,16 @@ export default function Signup() {
   const navigation = useNavigation<screenType>();
   const [first_name, setfirst_name] = React.useState('');
   const [last_name, setlast_name] = React.useState('');
-  const [email, setemail] = React.useState('');
+  const [phone_number, setphone_number] = React.useState('');
   const [password, setpassword] = React.useState('');
   const [confirm_password, setconfirm_password] = React.useState('');
   const [user_type, setuser_type] = React.useState('passenger');
   const [user_typeIndex, setuser_typeIndex] = React.useState(0);
+  const [loading, setloading] = React.useState(false);
+  const [openSnack, setopenSnack] = React.useState(false);
+  const [message, setmessage] = React.useState('');
+
+  const dispatch = useDispatch();
 
   const UserTypeData = [
     {label: 'Passenger', value: 'passenger'},
@@ -39,15 +49,71 @@ export default function Signup() {
   ];
 
   const handleSignup = () => {
-    console.log(first_name);
-    console.log(last_name);
-    console.log(email);
-    console.log(password);
-    console.log(confirm_password);
-    console.log(user_type);
-    
-  }
+    if (!first_name) {
+      setopenSnack(true);
+      setmessage('First Name is required');
+      return;
+    } else if (!last_name) {
+      setopenSnack(true);
+      setmessage('Last Name is required');
+      return;
+    } else if (!phone_number) {
+      setopenSnack(true);
+      setmessage('Phone Number is required');
+      return;
+    } else if (!password) {
+      setopenSnack(true);
+      setmessage('Password is required');
+      return;
+    } else if (!confirm_password) {
+      setopenSnack(true);
+      setmessage('Confirm your Password');
+      return;
+    }
+     else if (password != confirm_password) {
+      setopenSnack(true);
+      setmessage('Password must match');
+      return;
+    }
+    const body = {
+      first_name,
+      last_name,
+      phone_number,
+      password,
+      password2: confirm_password,
+      user_type,
+    };
+    setloading(true);
+    axios
+      .post(`${BASEURL}/account/register`, body)
+      .then(response => {
+        console.log(response.data);
+        const data = response?.data;
 
+        dispatch(
+          GetAuth({
+            first_name: data?.user?.first_name,
+            last_name: data?.user?.last_name,
+            phone_number: data?.user?.phone_number,
+            user_type: data?.user?.user_type,
+            token: data?.token,
+          }),
+        );
+      })
+      .catch(error => {
+        if (error?.response?.data) {
+          console.log(error?.response?.data);
+          if (error?.response?.data?.phone_number) {
+            setopenSnack(true);
+            setmessage(error?.response?.data?.phone_number[0]);
+          }
+        } else {
+          setopenSnack(true);
+          setmessage(error?.message);
+        }
+      })
+      .finally(() => setloading(false));
+  };
 
   return (
     <View style={{flex: 1, height: Dimensions.get('screen').height}}>
@@ -75,12 +141,22 @@ export default function Signup() {
             <View style={styles.user_type}>
               {UserTypeData?.map((item, index) => (
                 <TouchableOpacity
-                  style={[styles.user_typeBtn, user_typeIndex=== index&&styles.activeBtn]}
+                  key={index}
+                  style={[
+                    styles.user_typeBtn,
+                    user_typeIndex === index && styles.activeBtn,
+                  ]}
                   onPress={() => {
                     setuser_type(item?.value);
                     setuser_typeIndex(index);
                   }}>
-                  <Text style={[styles.user_type_text, user_typeIndex===index && styles.activeuser_type_text]}>{item.label}</Text>
+                  <Text
+                    style={[
+                      styles.user_type_text,
+                      user_typeIndex === index && styles.activeuser_type_text,
+                    ]}>
+                    {item.label}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -104,11 +180,11 @@ export default function Signup() {
             </View>
             <View style={{paddingBottom: 10}}>
               <TextInputComponent
-                label="Email"
-                keyboardType="email-address"
-                placeholder="Enter email address"
-                value={email}
-                onChange={e => setemail(e)}
+                label="Phone Number"
+                keyboardType="phone-pad"
+                placeholder="Enter phone number"
+                value={phone_number}
+                onChange={e => setphone_number(e)}
               />
             </View>
             <View style={{paddingBottom: 15}}>
@@ -129,11 +205,24 @@ export default function Signup() {
             </View>
 
             <View style={{paddingTop: 20}}>
-              <Button label="Sign up" onPress={handleSignup} />
+              {loading ? (
+                <LoadingButton />
+              ) : (
+                <Button label="Sign up" onPress={handleSignup} />
+              )}
             </View>
           </ScrollView>
         </View>
       </ImageBackground>
+
+      <View>
+        <SnackbarComponent
+          message={message}
+          visible={openSnack}
+          onDismiss={() => setopenSnack(false)}
+          onPress={() => setopenSnack(false)}
+        />
+      </View>
     </View>
   );
 }
@@ -181,16 +270,16 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginVertical: 10,
     elevation: 10,
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
-  user_type_text:{
+  user_type_text: {
     color: Colors.gray,
-    fontWeight: "500",
-    fontSize: 16
+    fontWeight: '500',
+    fontSize: 16,
   },
-  activeuser_type_text:{
+  activeuser_type_text: {
     color: Colors.white,
-    fontWeight: "500",
-    fontSize: 16
+    fontWeight: '500',
+    fontSize: 16,
   },
 });

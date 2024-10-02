@@ -5,6 +5,8 @@ import {
   StyleSheet,
   StatusBar,
   TextInput,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -15,14 +17,21 @@ import {useNavigation} from '@react-navigation/native';
 import {Colors} from '../../components/common/Colors';
 import TextInputComponent from '../../components/common/TextInputComponent';
 import {Button} from '../../components/common/Button';
+import {useSelector} from 'react-redux';
+import {selectStation} from '../../feature/slices/StationSlice';
+import SnackbarComponent from '../../components/common/SnackbarComponent';
 
 type screenType = NativeStackNavigationProp<RootParams>;
 
 export default function Reservation() {
   const navigation = useNavigation<screenType>();
+  const station = useSelector(selectStation);
+  const [destination, setdestination] = React.useState('');
+  const [openSnack, setopenSnack] = React.useState(false);
+  const [message, setmessage] = React.useState('');
 
   return (
-    <View style={{height: '100%'}}>
+    <View style={{height: Dimensions.get('window').height}}>
       <StatusBar
         backgroundColor={'transparent'}
         barStyle={'light-content'}
@@ -43,7 +52,7 @@ export default function Reservation() {
         </View>
       </View>
 
-      <View style={styles.destinationCard}>
+      <ScrollView style={styles.destinationCard}>
         <View style={styles.destinationInput}>
           <View
             style={{
@@ -65,22 +74,54 @@ export default function Reservation() {
           </View>
           <View style={{width: '80%'}}>
             <Text style={{color: Colors.gray}}>From</Text>
-              <TextInput readOnly value="Ofankor" style={{color: Colors.gray}} />
+            <TextInput
+              readOnly
+              value={station?.address}
+              style={{color: Colors.gray}}
+            />
 
             <View
-              style={{backgroundColor: Colors.gray, padding: 0.5, width: '100%'}}
+              style={{
+                backgroundColor: Colors.gray,
+                padding: 0.5,
+                width: '100%',
+              }}
             />
             <Text style={{color: Colors.gray, paddingTop: 15}}>
               Destination
             </Text>
-            <TextInput placeholder="Enter name of city or town" style={{color: Colors.gray}} />
+            <TextInput
+              placeholder="Enter name of city or town"
+              style={{color: Colors.gray}}
+              placeholderTextColor={Colors.gray}
+              value={destination}
+              onChangeText={e => setdestination(e)}
+            />
           </View>
         </View>
 
-        <View style={{width: "96%",marginTop: 30,marginHorizontal: "auto"}}>
-          <Button label='Search Availability' onPress={() => navigation.navigate("ticket")} />
+        <View style={{width: '96%', marginTop: 30, marginHorizontal: 'auto'}}>
+          <Button
+            label="Search Availability"
+            onPress={() => {
+              if(!destination){
+                setopenSnack(true);
+                setmessage("Enter your destination");
+                return;
+              }
+              navigation.navigate('ticket', {destination: destination});
+            }}
+          />
         </View>
-      </View>
+        <View style={{paddingTop: 100}}>
+          <SnackbarComponent
+            message={message}
+            visible={openSnack}
+            onDismiss={() => setopenSnack(false)}
+            onPress={() => setopenSnack(false)}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -120,6 +161,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: 20,
     padding: 10,
-    marginHorizontal: "auto"
+    marginHorizontal: 'auto',
   },
 });

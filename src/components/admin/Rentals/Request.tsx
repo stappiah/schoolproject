@@ -1,4 +1,11 @@
-import {View, Text, FlatList, StyleSheet, Modal} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Users} from '../../common/Data';
@@ -6,10 +13,52 @@ import {Colors} from '../../common/Colors';
 import {DataTable} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import MI from 'react-native-vector-icons/MaterialCommunityIcons';
-import { ModalButton } from '../../common/Button';
+import {ModalButton} from '../../common/Button';
+import axios from 'axios';
+import {BASEURL} from '../../common/BASEURL';
+import {useSelector} from 'react-redux';
+import {selectuser} from '../../../feature/slices/AuthSlice';
+import {selectStation} from '../../../feature/slices/StationSlice';
+import SnackbarComponent from '../../common/SnackbarComponent';
+import {useFocusEffect} from '@react-navigation/native';
+import {RentalRequestType} from '../../common/Types';
 
 export default function Request() {
   const [openDetail, setopenDetail] = React.useState(false);
+  const [openSnack, setopenSnack] = React.useState(false);
+  const [message, setmessage] = React.useState('');
+  const [loadingRental, setloadingRental] = React.useState(false);
+  const [rentalData, setrentalData] = React.useState<RentalRequestType[]>([]);
+  const [selectedrental, setselectedrental] =
+    React.useState<RentalRequestType | null>(null);
+  const user = useSelector(selectuser);
+  const station = useSelector(selectStation);
+
+  const getStationRental = () => {
+    setloadingRental(true);
+    axios
+      .get(`${BASEURL}/station-rental-request/${station?.id}`, {
+        headers: {Authorization: `token ${user?.token}`},
+      })
+      .then(response => {
+        setrentalData(response?.data);
+        console.log('data', response.data);
+      })
+      .catch(error => {
+        console.log(error?.response.data);
+        if (error?.message) {
+          setmessage(error?.message);
+          setopenSnack(true);
+        }
+      })
+      .finally(() => setloadingRental(false));
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getStationRental();
+    }, []),
+  );
 
   return (
     <View>
@@ -26,30 +75,44 @@ export default function Request() {
             <Text style={styles.th}>Destination</Text>
           </DataTable.Title>
         </DataTable.Header>
-
-        <FlatList
-          data={Users}
-          keyExtractor={item => item?.id.toLocaleString()}
-          renderItem={({item}) => (
-            <DataTable.Row
-            onPress={() => setopenDetail(true)}
-              style={{borderBottomWidth: 0.5, borderColor: Colors.gray}}>
-              <DataTable.Cell>
-                <Text style={{color: Colors.black}}>
-                  {item?.first_name} {item?.last_name}
-                </Text>
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <Text style={{color: Colors.black}}>{item?.phone_number}</Text>
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <Text>Tamale</Text>
-              </DataTable.Cell>
-            </DataTable.Row>
-          )}
-        />
+        {loadingRental ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '80%',
+            }}>
+            <ActivityIndicator
+              animating
+              color={Colors.primary}
+              size={'large'}
+            />
+          </View>
+        ) : (
+          <FlatList
+            data={rentalData}
+            keyExtractor={item => item?.id.toLocaleString()}
+            renderItem={({item}) => (
+              <DataTable.Row
+                onPress={() => {
+                  setselectedrental(item);
+                  setopenDetail(true);
+                }}
+                style={{borderBottomWidth: 0.5, borderColor: Colors.gray}}>
+                <DataTable.Cell>
+                  <Text style={{color: Colors.gray}}>{item?.full_name}</Text>
+                </DataTable.Cell>
+                <DataTable.Cell>
+                  <Text style={{color: Colors.gray}}>{item?.phone_number}</Text>
+                </DataTable.Cell>
+                <DataTable.Cell>
+                  <Text style={{color: Colors.gray}}>{item?.destination}</Text>
+                </DataTable.Cell>
+              </DataTable.Row>
+            )}
+          />
+        )}
       </DataTable>
-
 
       <Modal transparent animationType="slide" visible={openDetail}>
         <View
@@ -67,7 +130,9 @@ export default function Request() {
                 <Text style={{color: Colors.gray, fontSize: 16, width: '40%'}}>
                   Customer:
                 </Text>
-                <Text style={{color: Colors.gray, fontSize: 16}}>Stephen Appiah</Text>
+                <Text style={{color: Colors.gray, fontSize: 16}}>
+                  {selectedrental?.full_name}
+                </Text>
               </View>
 
               <View style={{flexDirection: 'row', gap: 10, paddingTop: 10}}>
@@ -75,7 +140,7 @@ export default function Request() {
                   Phone Number:
                 </Text>
                 <Text style={{color: Colors.gray, fontSize: 16}}>
-                  0554897867
+                  {selectedrental?.phone_number}
                 </Text>
               </View>
 
@@ -84,7 +149,16 @@ export default function Request() {
                   Destination:
                 </Text>
                 <Text style={{color: Colors.gray, fontSize: 16}}>
-                  Ayawaso Central
+                  {selectedrental?.destination}
+                </Text>
+              </View>
+
+              <View style={{flexDirection: 'row', gap: 10, paddingTop: 10}}>
+                <Text style={{color: Colors.gray, fontSize: 16, width: '40%'}}>
+                  Region:
+                </Text>
+                <Text style={{color: Colors.gray, fontSize: 16}}>
+                  {selectedrental?.region}
                 </Text>
               </View>
 
@@ -92,9 +166,7 @@ export default function Request() {
                 <Text style={{color: Colors.gray, fontSize: 16, width: '40%'}}>
                   Pick Up Point:
                 </Text>
-                <Text style={{color: Colors.gray, fontSize: 16}}>
-                  Kumasi
-                </Text>
+                <Text style={{color: Colors.gray, fontSize: 16}}>{selectedrental?.pickup}</Text>
               </View>
 
               <View style={{paddingTop: 30, width: '40%'}}>
@@ -107,6 +179,13 @@ export default function Request() {
           </View>
         </View>
       </Modal>
+
+      <SnackbarComponent
+        visible={openSnack}
+        message={message}
+        onPress={() => setopenSnack(false)}
+        onDismiss={() => setopenSnack(false)}
+      />
     </View>
   );
 }

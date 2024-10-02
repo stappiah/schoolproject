@@ -14,8 +14,8 @@ interface TextInputType {
     | 'email-address'
     | 'phone-pad'
     | 'number-pad';
-  value: string;
-  onChange: (e: string) => void;
+  value: any;
+  onChange: (e: any) => void;
 }
 
 export default function TextInputComponent({
@@ -28,13 +28,6 @@ export default function TextInputComponent({
 }: TextInputType) {
   return (
     <View style={styles.textStyle}>
-      {/* <TextInput
-        label={label}
-        
-        style={styles.inputStyle}
-        // left={<TextInput.Icon color={'#ddd'} icon={icon} />}
-        /> */}
-
       <TextInput
         mode="outlined"
         label={label}

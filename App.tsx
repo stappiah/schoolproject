@@ -21,18 +21,17 @@ import Schedule from './src/screens/admin/Schedule';
 import Buses from './src/screens/admin/Buses';
 import Rentals from './src/screens/admin/Rentals';
 import {Provider} from 'react-redux';
-import Store from './src/feature/Store';
 import persistStore from 'redux-persist/es/persistStore';
 import {PersistGate} from 'redux-persist/integration/react';
 import Navigations from './src/components/navigation/navigations';
+import { persistor, store } from './src/feature/Store';
 
 export default function App() {
-  const persistor = persistStore(Store);
   const Stack = createNativeStackNavigator<RootParams>();
   const Drawer = createDrawerNavigator<AdminParams>();
 
   return (
-    <Provider store={Store}>
+    <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaProvider>
           <GestureHandlerRootView style={{flex: 1}}>
